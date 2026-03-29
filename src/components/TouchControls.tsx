@@ -60,7 +60,7 @@ export function TouchControls() {
         className="absolute top-0 right-0 w-1/2 h-full pointer-events-auto"
         onPointerDown={(e) => {
           lastTouch.current = { x: e.clientX, y: e.clientY };
-          e.target.setPointerCapture(e.pointerId);
+          (e.target as HTMLElement).setPointerCapture(e.pointerId);
         }}
         onPointerMove={(e) => {
           if (!lastTouch.current) return;
@@ -71,11 +71,11 @@ export function TouchControls() {
         }}
         onPointerUp={(e) => {
           lastTouch.current = null;
-          e.target.releasePointerCapture(e.pointerId);
+          (e.target as HTMLElement).releasePointerCapture(e.pointerId);
         }}
         onPointerCancel={(e) => {
           lastTouch.current = null;
-          e.target.releasePointerCapture(e.pointerId);
+          (e.target as HTMLElement).releasePointerCapture(e.pointerId);
         }}
       />
 
@@ -84,18 +84,18 @@ export function TouchControls() {
         ref={joystickRef}
         className="absolute bottom-16 left-12 w-48 h-48 bg-white/10 rounded-full pointer-events-auto flex items-center justify-center border-4 border-white/20 shadow-xl touch-none"
         onPointerDown={(e) => {
-          e.target.setPointerCapture(e.pointerId);
+          (e.target as HTMLElement).setPointerCapture(e.pointerId);
           handleJoystick(e);
         }}
         onPointerMove={(e) => {
           if (e.buttons > 0) handleJoystick(e);
         }}
         onPointerUp={(e) => {
-          e.target.releasePointerCapture(e.pointerId);
+          (e.target as HTMLElement).releasePointerCapture(e.pointerId);
           resetJoystick();
         }}
         onPointerCancel={(e) => {
-          e.target.releasePointerCapture(e.pointerId);
+          (e.target as HTMLElement).releasePointerCapture(e.pointerId);
           resetJoystick();
         }}
       >

@@ -5,6 +5,7 @@ import { createNoise2D } from 'simplex-noise';
 export function TerrainGenerator() {
   const setBlocks = useStore((state) => state.setBlocks);
   const gameMode = useStore((state) => state.gameMode);
+  const setWorldLoaded = useStore((state) => state.setWorldLoaded);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -15,9 +16,10 @@ export function TerrainGenerator() {
       const caveNoise = createNoise2D();
       const blocks: Record<string, any> = {};
       
-      // 256x256 world as requested (256 chunks if 1 chunk = 16x16)
-      const width = 256;
-      const depth = 256;
+      // Safari (özellikle iOS) çok katı RAM sınırlarına sahiptir (sekme başına ~1GB).
+      // Çökmeleri (crash) tamamen önlemek için dünya boyutu 64x64 olarak optimize edildi.
+      const width = 64;
+      const depth = 64;
 
       for (let x = -width / 2; x < width / 2; x++) {
         for (let z = -depth / 2; z < depth / 2; z++) {
@@ -25,7 +27,7 @@ export function TerrainGenerator() {
           
           // Ravines (Maden çukurları)
           const isRavine = Math.abs(caveNoise(x * 0.02, z * 0.02)) < 0.08;
-          const bottomY = isRavine ? surfaceY - 20 : surfaceY - 8;
+          const bottomY = isRavine ? surfaceY - 10 : surfaceY - 4;
 
           for (let y = bottomY; y <= surfaceY; y++) {
             // 3D Cave noise simulation
@@ -71,12 +73,13 @@ export function TerrainGenerator() {
       }
       
       setBlocks(blocks);
+      setWorldLoaded(true);
       setLoading(false);
     };
 
     // Small timeout to let React render the loading screen first
     setTimeout(generateTerrain, 50);
-  }, [setBlocks, gameMode]);
+  }, [setBlocks, gameMode, setWorldLoaded]);
 
   if (!gameMode) return null;
 

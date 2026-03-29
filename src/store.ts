@@ -34,6 +34,7 @@ interface GameState {
   action: 'break' | 'place' | 'jump' | null;
   touchMovement: { x: number, y: number };
   touchLookDelta: { x: number, y: number };
+  worldLoaded: boolean;
   health: number;
   hunger: number;
   armor: { helmet: ItemType | null; chestplate: ItemType | null; leggings: ItemType | null; boots: ItemType | null };
@@ -51,6 +52,7 @@ interface GameState {
   setAction: (action: 'break' | 'place' | 'jump' | null) => void;
   setTouchMovement: (movement: { x: number, y: number }) => void;
   setTouchLookDelta: (delta: { x: number, y: number }) => void;
+  setWorldLoaded: (loaded: boolean) => void;
   setHealth: (health: number | ((prev: number) => number)) => void;
   setHunger: (hunger: number | ((prev: number) => number)) => void;
   setArmor: (slot: keyof GameState['armor'], item: ItemType | null) => void;
@@ -73,6 +75,7 @@ export const useStore = create<GameState>((set) => ({
   action: null,
   touchMovement: { x: 0, y: 0 },
   touchLookDelta: { x: 0, y: 0 },
+  worldLoaded: false,
   health: 20,
   hunger: 20,
   armor: { helmet: null, chestplate: null, leggings: null, boots: null },
@@ -107,6 +110,7 @@ export const useStore = create<GameState>((set) => ({
   setAction: (action) => set({ action }),
   setTouchMovement: (touchMovement) => set({ touchMovement }),
   setTouchLookDelta: (touchLookDelta) => set({ touchLookDelta }),
+  setWorldLoaded: (worldLoaded) => set({ worldLoaded }),
   setHealth: (health) => set((state) => ({ health: typeof health === 'function' ? health(state.health) : health })),
   setHunger: (hunger) => set((state) => ({ hunger: typeof hunger === 'function' ? hunger(state.hunger) : hunger })),
   setArmor: (slot, item) => set((state) => ({ armor: { ...state.armor, [slot]: item } })),

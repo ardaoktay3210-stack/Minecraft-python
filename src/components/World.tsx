@@ -42,8 +42,11 @@ export function World() {
     return exposed;
   }, [blocks]);
 
-  const physicsPositions = useMemo(() => {
-    return physicsBlocks.map(b => new THREE.Vector3(b.pos[0], b.pos[1], b.pos[2]));
+  const physicsInstances = useMemo(() => {
+    return physicsBlocks.map((b, i) => ({
+      key: i,
+      position: [b.pos[0], b.pos[1], b.pos[2]] as [number, number, number]
+    }));
   }, [physicsBlocks]);
 
   return (
@@ -61,13 +64,13 @@ export function World() {
       ))}
 
       {/* Physics Colliders - Instanced for massive performance boost */}
-      {physicsPositions.length > 0 && (
+      {physicsInstances.length > 0 && (
         <InstancedRigidBodies
-          positions={physicsPositions}
+          instances={physicsInstances}
           colliders="cuboid"
           type="fixed"
         >
-          <instancedMesh args={[null as any, null as any, physicsPositions.length]}>
+          <instancedMesh args={[null as any, null as any, physicsInstances.length]}>
             <boxGeometry args={[1, 1, 1]} />
             <meshBasicMaterial visible={false} />
           </instancedMesh>
@@ -99,7 +102,7 @@ function InstancedBlocks({ type, blocks }: { type: string, blocks: any[] }) {
   return (
     <instancedMesh 
       ref={meshRef} 
-      args={[null as any, null as any, 250000]} 
+      args={[null as any, null as any, Math.max(blocks.length, 1000)]} 
       frustumCulled={false}
       userData={{ isBlockType: true, blocks }}
     >

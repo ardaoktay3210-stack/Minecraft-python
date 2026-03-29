@@ -15,6 +15,7 @@ export default function App() {
   const isTouch = useStore((state) => state.isTouch);
   const gameMode = useStore((state) => state.gameMode);
   const setGameMode = useStore((state) => state.setGameMode);
+  const worldLoaded = useStore((state) => state.worldLoaded);
 
   useEffect(() => {
     if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
@@ -69,11 +70,13 @@ export default function App() {
         gl={{ antialias: !isTouch, powerPreference: 'high-performance' }}
       >
         <Sky sunPosition={[100, 20, 100]} />
-        <Physics gravity={[0, -30, 0]} paused={false}>
-          <Player />
-          <World />
-          <Mobs />
-        </Physics>
+        {worldLoaded && (
+          <Physics gravity={[0, -30, 0]} paused={false}>
+            <Player />
+            <World />
+            <Mobs />
+          </Physics>
+        )}
       </Canvas>
       <Inventory />
       <TouchControls />
